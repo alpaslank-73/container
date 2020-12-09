@@ -1,0 +1,27 @@
+FROM ubi7/ubi:7.7
+MAINTAINER alp@perception.com.tr
+LABEL description="MariaDB container on RHEL7"
+RUN yum install -y mariadb-server mariadb && \
+    yum clean all
+COPY todo.dump /tmp/ 
+#COPY rhel_dvd.repo training.repo /etc/yum.repos.d/
+COPY fix-permissions.sh ./
+RUN ./fix-permissions.sh /var/lib/mysql/   && \
+    ./fix-permissions.sh /var/log/mariadb/ && \
+    ./fix-permissions.sh /var/run/
+COPY docker-entrypoint.sh /
+RUN /bin/bash -c "/usr/bin/mysqld_safe --skip-grant-tables &" && sleep 5 &&  \
+    mysql -uroot -Bse "CREATE DATABASE todo;" && \
+    mysql -uroot todo < /tmp/todo.dump && \
+    mysql -uroot -Bse "CREATE USER 'alp'@'%' IDENTIFIED BY '123456';" && \
+    mysql -uroot -Bse "GRANT ALL PRIVILEGES ON todo.* TO 'alp'@'%';"
+#    mysql -uroot -h 127.0.0.1 -Bse "CREATE DATABASE todo;" && \
+#    mysql -uroot -h 127.0.0.1 todo < /tmp/todo.dump && \
+#    mysql -uroot -h 127.0.0.1 -Bse "CREATE USER 'alp'@'%' IDENTIFIED BY '123456';" && \
+#    mysql -uroot -h 127.0.0.1 -Bse "GRANT ALL PRIVILEGES ON todo.* TO 'alp'@'%';"
+
+# VOLUME /var/lib/mysql
+USER 27   
+EXPOSE 3306
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["mysqld_safe"]
