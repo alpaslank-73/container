@@ -7,7 +7,7 @@ RUN ["sed", "-i", "s/exec \"$@\"/echo \"not running $@\"/", "/usr/local/bin/dock
 ENV MYSQL_ROOT_PASSWORD=root
 
 #COPY setup.sql /docker-entrypoint-initdb.d/
-COPY todo.dump.for.container.init /docker-entrypoint-initdb.d/
+COPY setup.sql /docker-entrypoint-initdb.d/
 
 # Need to change the datadir to something else that /var/lib/mysql because the parent docker file defines it as a volume.
 # https://docs.docker.com/engine/reference/builder/#volume :
@@ -18,3 +18,5 @@ RUN ["/usr/local/bin/docker-entrypoint.sh", "mysqld", "--datadir", "/initialized
 FROM mysql:latest
 
 COPY --from=builder /initialized-db /var/lib/mysql
+
+EXPOSE 3306
