@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CREATE DATABASE todo;
 
 USE todo;
@@ -109,3 +110,9 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-11-03  2:16:17
+=======
+CREATE TABLE products (id INTEGER, name VARCHAR(256), price FLOAT, variant INTEGER);
+CREATE TABLE products_variant (id INTEGER, name VARCHAR(256));
+INSERT INTO products_variant (id, name) VALUES ('1', 'blue'), ('2', 'green');
+
+>>>>>>> 4c646a474a67a7950d5dfae470f5fba13af37c26
