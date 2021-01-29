@@ -1,0 +1,294 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels: 
+  app: todo-alp
+  name: todo-alp
+message: This is a message by Alp
+metadata:
+  annotations:
+    description: Todo App by Alp
+    iconClass: icon-mysql-database
+    openshift.io/display-name: TodoAlp
+    openshift.io/documentation-url: ...value omitted...
+    openshift.io/long-description: todo app written by Alp with ephemeral MySql db
+    openshift.io/provider-display-name: Perception, Inc.
+    tags: alp, todo
+  labels: 
+    app: todo-alp
+  name: todo-alp-final
+objects:
+#apiVersion: v1
+#items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: alp-mysql-rhel7
+      app.kubernetes.io/component: alp-mysql-rhel7
+      app.kubernetes.io/instance: alp-mysql-rhel7
+    name: alp-mysql-rhel7
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: alp-mysql-rhel7
+      app.kubernetes.io/component: alp-mysql-rhel7
+      app.kubernetes.io/instance: alp-mysql-rhel7
+    name: alp-mysql-rhel7
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: alp-mysql-rhel7:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: extend-image
+      git:
+        uri: https://github.com/alpaslank-73/container.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: mysql:8.0
+          namespace: openshift
+      type: Source
+    triggers:
+    - github:
+        secret: 1Jg4_W59g959ajs62RXm
+      type: GitHub
+    - generic:
+        secret: JwAdhp-zmGdWhKabc9Pw
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"alp-mysql-rhel7:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"alp-mysql-rhel7\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: alp-mysql-rhel7
+      app.kubernetes.io/component: alp-mysql-rhel7
+      app.kubernetes.io/instance: alp-mysql-rhel7
+    name: alp-mysql-rhel7
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: alp-mysql-rhel7
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          deployment: alp-mysql-rhel7
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_DATABASE
+            value: todo
+          - name: MYSQL_OPERATIONS_PASSWORD
+            value: oppass
+          - name: MYSQL_OPERATIONS_USER
+            value: opuser
+          - name: MYSQL_PASSWORD
+            value: "123456"
+          - name: MYSQL_USER
+            value: alp
+          image: ' '
+          name: alp-mysql-rhel7
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: alp-mysql-rhel7
+      app.kubernetes.io/component: alp-mysql-rhel7
+      app.kubernetes.io/instance: alp-mysql-rhel7
+    name: alp-mysql-rhel7
+  spec:
+    ports:
+    - name: 3306-tcp
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      deployment: alp-mysql-rhel7
+  status:
+    loadBalancer: {}
+#kind: List
+#metadata: {}
+#apiVersion: v1
+#items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: todo
+      app.kubernetes.io/component: todo
+      app.kubernetes.io/instance: todo
+    name: todo
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: todo
+      app.kubernetes.io/component: todo
+      app.kubernetes.io/instance: todo
+    name: todo
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: todo:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: section3-todo-admin
+      git:
+        ref: openshift1
+        uri: https://github.com/alpaslank-73/flask-pirple.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: python:3.8-ubi8
+          namespace: openshift
+      type: Source
+    triggers:
+    - github:
+        secret: rnQJYVUF2RhobPJN7KEf
+      type: GitHub
+    - generic:
+        secret: DQlK21qMQXD1kMBIRFHJ
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"todo:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"todo\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: todo
+      app.kubernetes.io/component: todo
+      app.kubernetes.io/instance: todo
+    name: todo
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: todo
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          deployment: todo
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_DATABASE
+            value: todo
+          - name: MYSQL_HOST
+            value: alp-mysql-rhel7
+          - name: MYSQL_PASSWORD
+            value: "123456"
+          - name: MYSQL_USER
+            value: alp
+          image: ' '
+          name: todo
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: todo
+      app.kubernetes.io/component: todo
+      app.kubernetes.io/instance: todo
+    name: todo
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deployment: todo
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  apiVersion: route.openshift.io/v1
+  metadata:
+    name: todo
+    labels:
+      app: todo
+      app.kubernetes.io/component: todo
+      app.kubernetes.io/instance: todo
+  spec:
+    host: todo.apps.ocp.perception.com.tr
+    to:
+      kind: Service
+      name: todo
+    port:
+      targetPort: 8080
+#    targetPort: 8080-tcp
+
+#kind: List
+#metadata: {}
