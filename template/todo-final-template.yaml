@@ -282,7 +282,7 @@ objects:
       app.kubernetes.io/component: todo
       app.kubernetes.io/instance: todo
   spec:
-    host: todo.apps.ocp.perception.com.tr
+#   host: todo.apps.ocp.perception.com.tr
     to:
       kind: Service
       name: todo
