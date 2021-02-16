@@ -1,7 +1,28 @@
-Github repo for Dockerfiles, images etc
+To extend maraidb-103 image to include todo db:
 
-This repo is used to keep container related files like Dockerfiles etc.
+$ git clone git@github.com:alpaslank-73/container.git
 
-The mysql Dockerfile uses a docker.io mysql image as the base image so you probably need to login to docker.io to build new image (and check /etc/containers/registries.conf ==> registries = ['registry.redhat.io', 'quay.io', 'docker.io'] )
+$ cd container/extend-image
 
-You can link this repo to quay.io and/or docker.io
+$ sudo mkdir /temp
+
+$ sudo s2i build . registry.redhat.io/rhel8/mariadb-103 yourtag --as-dockerfile /temp/Dockerfile -e MYSQL_ROOT_PASSWORD=redhat -e MYSQL_OPERATIONS_USER=opuser -e MYSQL_OPERATIONS_PASSWORD=oppass -e MYSQL_DATABASE=todo -e MYSQL_USER=alp -e MYSQL_PASSWORD=123456
+
+$ cd /temp
+
+Fix ownership in Dockerfile to avoid "permission denied" errors!
+
+$ sudo vim Dockerfile
+...
+# By Alp
+#RUN chown -R 1001:0 /tmp/src
+RUN chown -R 27:0 /tmp/src
+#USER 1001
+USER 27
+# End By Alp
+...
+
+$ sudo podman build -t yuourtag .
+
+
+To use an updated todo db (which includes deneme1 table) use container/extend-image-2 dir instead! 
