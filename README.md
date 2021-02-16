@@ -14,12 +14,10 @@ Fix ownership in Dockerfile to avoid "permission denied" errors!
 
 $ sudo vim Dockerfile
 ...
-# By Alp
 #RUN chown -R 1001:0 /tmp/src
 RUN chown -R 27:0 /tmp/src
 #USER 1001
 USER 27
-# End By Alp
 ...
 
 $ sudo podman build -t yuourtag .
