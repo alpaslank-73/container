@@ -13,10 +13,13 @@ $ cd /temp
 Fix ownership in Dockerfile to avoid "permission denied" errors!
 
 $ sudo vim Dockerfile
+
 ...
+
 RUN chown -R 27:0 /tmp/src
 
 USER 27
+
 ...
 
 $ sudo podman build -t yourtag .
