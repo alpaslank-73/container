@@ -1,4 +1,4 @@
-To extend maraidb-103 image to include todo db:
+To extend mariadb-103 image to include todo db:
 
 $ git clone git@github.com:alpaslank-73/container.git
 
