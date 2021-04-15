@@ -193,7 +193,8 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: python:3.8-ubi8
+          #name: python:3.8-ubi8
+          name: python:3.6
           namespace: openshift
       type: Source
     triggers:
