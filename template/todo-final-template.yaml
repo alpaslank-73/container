@@ -194,7 +194,8 @@ objects:
         from:
           kind: ImageStreamTag
           #name: python:3.8-ubi8
-          name: python:3.6
+          #name: python:3.6
+          name: python:latest
           namespace: openshift
       type: Source
     triggers:
